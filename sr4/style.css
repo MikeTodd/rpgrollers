@@ -1,0 +1,17 @@
+body{
+	font:0.8em "Tahoma",sans-serif;
+	background:#000;
+	color:#66FF66;
+}
+
+.miss {
+	color:#33AA33;
+}
+
+.one {
+	color:#CCFF66;
+}
+
+.edge {
+	font-style:italic;
+}

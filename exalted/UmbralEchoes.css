@@ -1,0 +1,69 @@
+body {
+	/*background-color: #000000;/**/
+	background-color: #11001A;
+}
+
+body {
+	/*color: #996699; /**/
+	color: #6666AA;
+}
+
+a {
+	/*color: #FF00FF; /**/
+	color: #990099;
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:underline;
+}
+
+a:visited {
+	/*color: #663366; /**/
+	color: #663366;
+}
+
+a:active {
+	color: #FF99FF;
+}
+
+h1 {
+	/*color: #8080FF; /**/
+	color: #AAAADD;
+}
+
+h2 {
+	/*color: #8080FF; /**/
+	color: #9999CC;
+}
+
+h3, h4, th {
+	color: #9999CC;
+}
+
+h5, h6 {
+	color: #6699CC;
+}
+
+td {
+/*	color: #99CCCC; /**/
+}
+
+tr.even {
+	background-color:#222244
+}
+
+tr.odd {
+	background-color:#111133;
+}
+
+th {
+	/*background-color:#222233; /**/
+	background-color:#181025;
+	color:#EEEEFF;
+}
+
+.frontpage-th {
+	/*background-color:#222233; /**/
+	background: #11001A url(/gradation2.png) bottom repeat-x;
+}
