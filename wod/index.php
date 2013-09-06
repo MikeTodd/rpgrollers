@@ -19,7 +19,7 @@
 <head>
 <title>Old World of Darkness Dice Roller</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<META name="Keywords" content="dice roller, roleplaying, world of darkness, mage, werewolf, vampire">
+<META name="Keywords" content="dice roller, roleplaying, world of darkness, wod, owod, cwod, mage, werewolf, vampire">
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 // Makes sure all appropriate values were filled in
@@ -267,7 +267,6 @@ function checkForm2(theForm) {
 		print "<td><font size=\"-1\">";
 		// now print individual results
 		printResults($row);
-		//echo " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size=-1><a href=''>link</a> to this roll</font>";
 		print "</font></td>\n";
 		print "</tr>";
 	} /**/
@@ -458,7 +457,7 @@ function printResults($main) {
 	}
 	
 	print "<font color=CCCCCC><b> ";
-	echo "<a href='".$PHP_SELF."?show_roll={$main["RollID"]}'>";  // Link to 
+	echo "<a href='".$PHP_SELF."?show_roll={$main["RollID"]}'>";  // Link to this roll 
 	// Account for threshold
 	$succ -= $thresh;
 	if ($succ < 0) {

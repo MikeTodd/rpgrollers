@@ -13,6 +13,8 @@
 <head>
 <title>World of Darkness Dice Roller</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="shortcut icon" href="owod.ico" type="image/x-icon" />
+<META name="Keywords" content="dice roller, roleplaying, world of darkness, nwod, wod, mage, werewolf, vampire">
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 
@@ -145,10 +147,8 @@ function checkForm3(theForm) {
         </table></td>
     <td width=496 valign="top"> <address>
         <i><font color="Gray" size=2>This page is written and maintained by</font></i> 
-        <font color="Gray"><i><font size=2><a href="mailto:MikeTodd13@hotmail.com?subject=Dice%20Rolling%20Script"><font size="3">Mike 
-        Todd</font></a></font></i></font><font color="Gray" size="2"> (plays <font color="#CCCCCC"><a href="http://sammael.umbralechoes.com/">Sammael</a></font> 
-        and <font color="#CCCCCC"><a href="/Characters/Unmod/Mas/">Masurao_Aoarashi</a></font> 
-        on the unmods)</font>
+        <font color="Gray"><i><font size=2><a href="http://umbralechoes.com/contact-me.php"><font size="3">Mike 
+        Todd</font></a></font></i></font><font color="Gray" size="2"> (plays <font color="#CCCCCC"><a href="http://sammael.umbralechoes.com/">Sammael</a></font> on the unmods)</font>
     </address>
       <address>
       <hr>
@@ -186,15 +186,29 @@ function checkForm3(theForm) {
   </tr>
 <?
 	$rescount = 0;
-	$result=mysql_query("select *, DATE_FORMAT(roll_time, '%Y-%m-%d %H:%i:%s') as roll_time from wod2_roll_info ORDER BY roll_id DESC limit 0,50")
-		or die ("Cannot peform SELECT: ".mysql_error());
-	
+	if ((int)$_GET['show_roll'] == 0) {
+		$result=mysql_query("select *, DATE_FORMAT(roll_time, '%Y-%m-%d %H:%i:%s') as roll_time 
+				FROM wod2_roll_info
+				ORDER BY roll_id DESC limit 0,50")
+			or die ("Cannot peform SELECT: ".mysql_error());
+	} else {
+		$result=mysql_query("select *, DATE_FORMAT(roll_time, '%Y-%m-%d %H:%i:%s') as roll_time from wod2_roll_info
+			WHERE roll_id BETWEEN ".((int)$_GET['show_roll']-10)." AND ".((int)$_GET['show_roll']+10)."
+			order by roll_id DESC limit 0,50")
+			or die ("Cannot peform SELECT: ".mysql_error());
+
+	}
 	// show last 30 rolls
 	$count = 0;
 	while ($count < 30 && $row=mysql_fetch_array($result)) {
 		$count++;
+		// If user looked up individual roll, highlight it
+		if ((int)$_GET['show_roll'] > 0 && $row["roll_id"] == (int)$_GET['show_roll']) {
+			print "<tr bgcolor=\"#153515\">\n";
+			$odd = !$odd;
+		}
 		// keep track of even and odd rows; switch background color
-		if ($count % 2) {
+		elseif ($count % 2) {
 			print "<tr bgcolor=\"#15151A\">\n";
 			$odd = false;
 		} else {
@@ -560,15 +574,16 @@ function print_results($roll_info) {
 	}
 	
 	// Display results
+	echo " (<a href='".$PHP_SELF."?show_roll={$roll_info["roll_id"]}'>";  // Link to this roll 
 	if ($roll_info['chance_roll'] && $succ < 0 && $ones) {
-		echo " (CRITICAL FAILURE)";
+		echo "CRITICAL FAILURE)";
 	} elseif ($roll_info['initiative']) {
-		echo " (initiative roll)";
+		echo "initiative roll";
 	} else {
-		echo " ($succ success";
+		echo "$succ success";
 		if ($succ != 1) echo "es";
-		echo ")";
 	}
+	echo "</a>)";
 	echo "</font>";
 
 	mysql_free_result($resultset);
