@@ -13,7 +13,7 @@
 <head>
 <title>World of Darkness Dice Roller</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link rel="shortcut icon" href="owod.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="wod.ico" type="image/x-icon" />
 <META name="Keywords" content="dice roller, roleplaying, world of darkness, nwod, wod, mage, werewolf, vampire">
 <SCRIPT LANGUAGE="JavaScript">
 <!--
