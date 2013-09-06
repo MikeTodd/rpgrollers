@@ -148,7 +148,7 @@ function checkForm2(theForm) {
       <td width=496 valign="top">
 	    <b>If you would like to play in an unmoderated White Wolf game, I have set up a chat <a href="http://unmodchat.com/"><font color="#FFFFFF"><b>here</b></font></a>.</b><br />
 	    <address>
-        <i><font color="Gray" size=2>This page is written and maintained by</font></i> <font color="Gray"><i><font size=2><a href="mailto:MikeTodd13@hotmail.com?subject=Dice%20Rolling%20Script"><font size="3">Mike 
+        <i><font color="Gray" size=2>This page is written and maintained by</font></i> <font color="Gray"><i><font size=2><a href="http://umbralechoes.com/contact-me.php"><font size="3">Mike 
           Todd</font></a></font></i></font><font color="Gray" size="2"> (plays <font color="#CCCCCC"><a href="http://sammael.umbralechoes.com/">Sammael</a></font> on the unmods)
             </font>
         </address>
@@ -182,15 +182,29 @@ function checkForm2(theForm) {
           </tr>
 <?php
 	$rescount = 0;
-	$result=mysql_query("select *, DATE_FORMAT(RollTime, '%Y-%m-%d %H:%i:%s') as RollTime from mainroll m, rulessets r, colorschemes c where m.RulesSet=r.RulesSet and r.RulesSet=c.RulesSet order by RollID DESC limit 0,50")
-		or die ("Cannot peform SELECT: ".mysql_error());
+	if ($_GET['show_roll'] == '') {
+		$result=mysql_query("select *, DATE_FORMAT(RollTime, '%Y-%m-%d %H:%i:%s') as RollTime from mainroll m, rulessets r, colorschemes c where m.RulesSet=r.RulesSet and r.RulesSet=c.RulesSet order by RollID DESC limit 0,50")
+			or die ("Cannot peform SELECT: ".mysql_error());
+	} else {
+		$result=mysql_query("select *, DATE_FORMAT(RollTime, '%Y-%m-%d %H:%i:%s') as RollTime from mainroll m, rulessets r, colorschemes c
+			WHERE m.RulesSet=r.RulesSet and r.RulesSet=c.RulesSet
+			  AND RollID BETWEEN ".((int)$_GET['show_roll']-10)." AND ".((int)$_GET['show_roll']+10)."
+			order by RollID DESC limit 0,50")
+			or die ("Cannot peform SELECT: ".mysql_error());
+	}
 	
 	// show last 30 rolls
 	$count = 0;
 	while ($count < 30 && $row=mysql_fetch_array($result)) {
 		$count++;
+
+		// If user looked up individual roll, highlight it
+		if ((int)$_GET['show_roll'] > 0 && $row["RollID"] == (int)$_GET['show_roll']) {
+			print "<tr bgcolor=\"#153515\">\n";
+			$odd = !$odd;
+		}
 		// keep track of even and odd rows; switch background color
-		if ($count % 2) {
+		elseif ($count % 2) {
 			print "<tr bgcolor=\"#151515\">\n";
 			$odd = false;
 		} else {
@@ -253,6 +267,7 @@ function checkForm2(theForm) {
 		print "<td><font size=\"-1\">";
 		// now print individual results
 		printResults($row);
+		//echo " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size=-1><a href=''>link</a> to this roll</font>";
 		print "</font></td>\n";
 		print "</tr>";
 	} /**/
@@ -442,7 +457,8 @@ function printResults($main) {
 		}
 	}
 	
-	print "<font color=CCCCCC>";
+	print "<font color=CCCCCC><b> ";
+	echo "<a href='".$PHP_SELF."?show_roll={$main["RollID"]}'>";  // Link to 
 	// Account for threshold
 	$succ -= $thresh;
 	if ($succ < 0) {
@@ -455,24 +471,25 @@ function printResults($main) {
 		} else {
 			$succ -= $ones;
 			if ($succ > 1)
-				print(" ($succ successes)");
+				print("[$succ successes]");
 			elseif ($succ == 1)
-				print(" ($succ success)");
+				print("[$succ success]");
 			else
-				print(" (failure)");
+				print("[failure]");
 		}
 	} else {
-		print(" (initiative roll)");
+		print("[initiative roll]");
 	}
-	print("</font>");
+	echo "</a>";
+	print("</b></font>");
 
 	print("</font>");
 }
 
-function cleanupRolls($rolls_to_keep = 90) {
-	$max_query = mysql_query("SELECT MAX(RollID) as `max` FROM mainroll");
+function cleanupRolls($days_to_keep = 90) {
+	$max_query = mysql_query("SELECT MAX(RollID) as `max` FROM mainroll WHERE RollTime < DATE_SUB(NOW(), INTERVAL ".(int)$days_to_keep." DAY)");
 	$max_result = mysql_fetch_assoc($max_query);
-	$delete_lt = $max_result['max'] - $rolls_to_keep;
+	$delete_lt = $max_result['max'];
 	mysql_query("delete from rolls WHERE RollID < $delete_lt");
 	mysql_query("delete from mainroll WHERE RollID < $delete_lt");
 }
