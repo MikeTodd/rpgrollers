@@ -50,31 +50,8 @@ if ($_GET['Submit'] == 'Calculate') {
 </form>
   </body>
 </html>
+
 <?php
-if ($_GET['Submit'] == 'Calculate') {
-
-	echo '<div id="chart_div" style="width: 900px; height: 600px;"></div>';
-
-	echo "<table border='1'>
-		<tr>
-			<th># in hand</th>
-			<th>P(exactly)</th>
-			<th>P(at least)</th>
-			<th>P(at most)</th
-		</tr>";
-
-	for ($i=1; $i < (int)$_GET['hand_size']; $i++) {
-		$exact = round(hypergeometric((int)$_GET['deck_size'],(int)$_GET['num_target'],(int)$_GET['by_turn']+6,$i)*100, 1);
-		$at_least = round(hypergeometric_at_least((int)$_GET['deck_size'],(int)$_GET['num_target'],(int)$_GET['by_turn']+6,$i)*100, 1);
-		$at_most = 100 - $at_least;
-		echo "<tr><td>{$i}</td><td>{$exact}%</td><td>{$at_least}%</td><td>{$at_most}%</td></tr>";
-	}
-	echo "</table>";
-
-}
-
-//$a = nCr(28,5);
-//$b = 
 
 // Returns hypergeometric distribution for at least the desired number of successes, up to $sample_size successes
 function hypergeometric_at_least($population, $successes_in_population, $sample_size, $at_least) {
