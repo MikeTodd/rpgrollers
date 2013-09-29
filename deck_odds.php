@@ -13,12 +13,12 @@ if ($_GET['Submit'] == 'Calculate') {
         var data = google.visualization.arrayToDataTable([
           ['Num in hand', 'P(exact)', 'P(at least)'],
 <?php
-	for ($i=1; $i < (int)$_GET['hand_size']; $i++) {
-		$exact = hypergeometric((int)$_GET['deck_size'],(int)$_GET['num_target'],(int)$_GET['hand_size'],$i);
-		$at_least = hypergeometric_at_least((int)$_GET['deck_size'],(int)$_GET['num_target'],(int)$_GET['hand_size'],$i);
+	for ($i=1; $i < (int)$_GET['by_turn']+6; $i++) {
+		$exact = hypergeometric((int)$_GET['deck_size'],(int)$_GET['num_target'],(int)$_GET['by_turn']+6,$i);
+		$at_least = hypergeometric_at_least((int)$_GET['deck_size'],(int)$_GET['num_target'],(int)$_GET['by_turn']+6,$i);
 		if ($at_least > 0.000) { // Don't show 0% odds
 			echo "['{$i}',{$exact},{$at_least}]";
-			if ($i != (int)$_GET['hand_size'] - 1)
+			if ($i != (int)$_GET['by_turn']+6 - 1)
 				echo ",";
 			echo "\r\n";
 		}
@@ -27,7 +27,7 @@ if ($_GET['Submit'] == 'Calculate') {
         ]);
 
         var options = {
-          title: '% odds of getting X of the given card, having drawn <?= (int)$_GET['hand_size']; ?> cards',
+          title: '% odds of having X of the given card on turn <?= (int)$_GET['by_turn']; ?>',
           hAxis: {title: '# of cards'},
           vAxis: {title: 'Odds', format:'#,###%'},
         };
@@ -43,9 +43,9 @@ if ($_GET['Submit'] == 'Calculate') {
 
   <body>
 <form method="get" action="#">
-	Deck size: <input type="text" name="deck_size" value="<?= $_GET['deck_size']; ?>"><br />
+	Deck size: <input type="text" name="deck_size" value="<?= (int)$_GET['deck_size'] == 0 ? 60 : $_GET['deck_size']; ?>"><br />
 	Number of target card in deck: <input type="text" name="num_target" value="<?= $_GET['num_target']; ?>"><br />
-	"Hand" size: <input type="text" name="hand_size" value="<?= $_GET['hand_size']; ?>"><br />
+	Caclulate odds for turn: <input type="text" name="by_turn" value="<?= (int)$_GET['by_turn'] == 0 ? 1 : (int)$_GET['by_turn']; ?>"><br />
 	<input type="submit" name="Submit" value="Calculate">
 </form>
   </body>
@@ -64,8 +64,8 @@ if ($_GET['Submit'] == 'Calculate') {
 		</tr>";
 
 	for ($i=1; $i < (int)$_GET['hand_size']; $i++) {
-		$exact = round(hypergeometric((int)$_GET['deck_size'],(int)$_GET['num_target'],(int)$_GET['hand_size'],$i)*100, 1);
-		$at_least = round(hypergeometric_at_least((int)$_GET['deck_size'],(int)$_GET['num_target'],(int)$_GET['hand_size'],$i)*100, 1);
+		$exact = round(hypergeometric((int)$_GET['deck_size'],(int)$_GET['num_target'],(int)$_GET['by_turn']+6,$i)*100, 1);
+		$at_least = round(hypergeometric_at_least((int)$_GET['deck_size'],(int)$_GET['num_target'],(int)$_GET['by_turn']+6,$i)*100, 1);
 		$at_most = 100 - $at_least;
 		echo "<tr><td>{$i}</td><td>{$exact}%</td><td>{$at_least}%</td><td>{$at_most}%</td></tr>";
 	}
