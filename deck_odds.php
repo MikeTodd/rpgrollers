@@ -48,6 +48,15 @@ if ($_GET['Submit'] == 'Calculate') {
 	Caclulate odds for turn: <input type="text" name="by_turn" value="<?= (int)$_GET['by_turn'] == 0 ? 1 : (int)$_GET['by_turn']; ?>"><br />
 	<input type="submit" name="Submit" value="Calculate">
 </form>
+
+<?php
+if ($_GET['Submit'] == 'Calculate') {
+?>
+	<div id="chart_div" style="width: 900px; height: 600px;"></div>';
+<?php
+}
+?>
+
   </body>
 </html>
 
